@@ -13,9 +13,11 @@ import {
     Settings,
     ChevronUp,
     CreditCard,
-    HelpCircle
+    HelpCircle,
+    Search,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 
 interface SidebarProps {
     isCollapsed: boolean;
@@ -26,6 +28,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
     const [isDark, setIsDark] = useState(false);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [activeItem, setActiveItem] = useState('home');
+    const searchInputRef = useRef<HTMLInputElement>(null);
 
     // Initialize theme from localStorage and system preference
     useEffect(() => {
@@ -35,6 +38,19 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
 
         setIsDark(shouldBeDark);
         document.documentElement.classList.toggle('dark', shouldBeDark);
+    }, []);
+
+    // Cmd+K to focus search
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                searchInputRef.current?.focus();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
     }, []);
 
     const toggleTheme = () => {
@@ -60,7 +76,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
             `}
         >
             {/* Header */}
-            <div className={`p-4 mb-2 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+            <div className={`p-4 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
                 {!isCollapsed && (
                     <div className="flex items-center gap-2.5 px-2 overflow-hidden">
                         <div className="p-1.5 rounded-md bg-primary text-primary-foreground shrink-0">
@@ -71,7 +87,6 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                         </span>
                     </div>
                 )}
-
                 <button
                     onClick={toggleSidebar}
                     className={`
@@ -81,6 +96,37 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                 >
                     <LayoutTemplate className="w-5 h-5 shrink-0" />
                 </button>
+            </div>
+
+            {/* Search */}
+            <div className="px-3 mb-2">
+                {!isCollapsed ? (
+                    <div className="relative group">
+                        <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                            <Search className="h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                        </div>
+                        <input
+                            ref={searchInputRef}
+                            type="text"
+                            placeholder="Search..."
+                            className="w-full pl-9 pr-3 py-1.5 bg-sidebar-accent/50 border border-transparent focus:border-sidebar-border focus:bg-background rounded-md text-sm outline-none transition-all placeholder:text-muted-foreground/70"
+                        />
+                        <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
+                            <span className="text-xs text-muted-foreground/50 border border-border px-1.5 py-0.5 rounded">⌘K</span>
+                        </div>
+                    </div>
+                ) : (
+                    <button
+                        onClick={() => {
+                            if (isCollapsed) toggleSidebar();
+                            setTimeout(() => searchInputRef.current?.focus(), 300);
+                        }}
+                        className="w-full flex justify-center p-2 rounded-md hover:bg-sidebar-accent/50 text-muted-foreground transition-colors"
+                        title="Search (Cmd+K)"
+                    >
+                        <Search className="w-5 h-5 shrink-0" />
+                    </button>
+                )}
             </div>
 
             {/* Navigation */}
@@ -125,7 +171,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
             </nav>
 
             {/* Bottom Actions */}
-            <div className="p-3 mt-auto space-y-1 border-t border-sidebar-border/50 overflow-hidden">
+            <div className="p-3 mt-auto space-y-1 border-t border-sidebar-border/50">
                 {/* Theme Toggle */}
                 <button
                     onClick={toggleTheme}
@@ -175,23 +221,39 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                     {showProfileMenu && (
                         <div className="absolute bottom-full left-0 right-0 mb-2 mx-1 bg-popover border border-border rounded-lg shadow-lg overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200 z-50">
                             <div className="p-1">
-                                <button className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-popover-foreground text-sm">
+                                <Link
+                                    href="/settings"
+                                    onClick={() => setShowProfileMenu(false)}
+                                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-popover-foreground text-sm"
+                                >
                                     <User className="w-4 h-4" />
                                     <span>Profile</span>
-                                </button>
-                                <button className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-popover-foreground text-sm">
+                                </Link>
+                                <Link
+                                    href="/settings"
+                                    onClick={() => setShowProfileMenu(false)}
+                                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-popover-foreground text-sm"
+                                >
                                     <Settings className="w-4 h-4" />
                                     <span>Settings</span>
-                                </button>
-                                <button className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-popover-foreground text-sm">
+                                </Link>
+                                <Link
+                                    href="/settings/billing"
+                                    onClick={() => setShowProfileMenu(false)}
+                                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-popover-foreground text-sm"
+                                >
                                     <CreditCard className="w-4 h-4" />
                                     <span>Billing</span>
-                                </button>
+                                </Link>
                                 <div className="h-px bg-border my-1" />
-                                <button className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-popover-foreground text-sm">
+                                <Link
+                                    href="/support"
+                                    onClick={() => setShowProfileMenu(false)}
+                                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-popover-foreground text-sm"
+                                >
                                     <HelpCircle className="w-4 h-4" />
-                                    <span>Help Center</span>
-                                </button>
+                                    <span>Support</span>
+                                </Link>
                                 <button
                                     onClick={() => {
                                         setShowProfileMenu(false);

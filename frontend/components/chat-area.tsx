@@ -6,6 +6,31 @@ import { useState } from "react";
 export default function ChatArea() {
     const [input, setInput] = useState("");
     const [username] = useState("John"); // Ideally fetched from auth context
+    const [isListening, setIsListening] = useState(false);
+    const [attachment, setAttachment] = useState<File | null>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setAttachment(e.target.files[0]);
+        }
+    };
+
+    const toggleListening = () => {
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            if (!isListening) {
+                // Mock listening start - in a real app, instantiate SpeechRecognition
+                setIsListening(true);
+                setTimeout(() => {
+                    setIsListening(false);
+                    setInput(prev => prev + " (Voice input simulation)");
+                }, 3000);
+            } else {
+                setIsListening(false);
+            }
+        } else {
+            alert("Speech recognition isn't supported in this browser.");
+        }
+    };
 
     const suggestions = [
         "Create a landing page",
@@ -32,6 +57,15 @@ export default function ChatArea() {
                 <div className="relative group">
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 to-accent/20 rounded-xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
                     <div className="relative flex flex-col bg-card border border-border rounded-xl shadow-lg ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 transition-all">
+                        {attachment && (
+                            <div className="px-4 pt-4">
+                                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                                    <Paperclip className="w-3 h-3" />
+                                    {attachment.name}
+                                    <button onClick={() => setAttachment(null)} className="ml-1 hover:text-destructive">&times;</button>
+                                </span>
+                            </div>
+                        )}
                         <textarea
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
@@ -42,10 +76,14 @@ export default function ChatArea() {
                         {/* Toolbar */}
                         <div className="flex items-center justify-between p-3 border-t border-border/50 bg-muted/30 rounded-b-xl">
                             <div className="flex items-center gap-2">
-                                <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors">
+                                <label className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors cursor-pointer relative">
+                                    <input type="file" className="hidden" onChange={handleFileChange} />
                                     <Paperclip className="w-5 h-5" />
-                                </button>
-                                <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors">
+                                </label>
+                                <button
+                                    onClick={toggleListening}
+                                    className={`p-2 rounded-md transition-colors ${isListening ? 'text-red-500 bg-red-100 animate-pulse' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
+                                >
                                     <Mic className="w-5 h-5" />
                                 </button>
                             </div>
