@@ -1,5 +1,8 @@
 'use client';
 
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+
 import {
     Home,
     FolderKanban,
@@ -27,10 +30,24 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
+    const router = useRouter();
+    const { data: session } = authClient.useSession();
+    const user = session?.user;
+
     const [isDark, setIsDark] = useState(false);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [activeItem, setActiveItem] = useState('home');
     const searchInputRef = useRef<HTMLInputElement>(null);
+
+    const handleLogout = async () => {
+        await authClient.signOut({
+            fetchOptions: {
+                onSuccess: () => {
+                    router.push("/login");
+                },
+            },
+        });
+    };
 
     // Initialize theme from localStorage and system preference
     useEffect(() => {
@@ -233,7 +250,11 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                         `}
                     >
                         <div className="w-8 h-8 rounded-full bg-sidebar-border overflow-hidden ring-1 ring-border flex items-center justify-center shrink-0">
-                            <User className="w-4 h-4 text-muted-foreground" />
+                            {user?.image ? (
+                                <img src={user.image} alt={user.name || "User"} className="w-full h-full object-cover" />
+                            ) : (
+                                <User className="w-4 h-4 text-muted-foreground" />
+                            )}
                         </div>
                         <AnimatePresence mode="popLayout">
                             {!isCollapsed && (
@@ -244,16 +265,15 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                                     className="flex items-center flex-1 min-w-0 gap-2 overflow-hidden"
                                 >
                                     <div className="flex-1 text-left overflow-hidden whitespace-nowrap min-w-0">
-                                        <p className="text-sm font-medium text-sidebar-foreground truncate">John Doe</p>
-                                        <p className="text-xs text-muted-foreground truncate">Pro Plan</p>
+                                        <p className="text-sm font-medium text-sidebar-foreground truncate">{user?.name || "Guest"}</p>
+                                        <p className="text-xs text-muted-foreground truncate">{user?.email || "Sign in"}</p>
                                     </div>
                                     <ChevronUp className={`w-4 h-4 text-muted-foreground transition-transform duration-200 shrink-0 ${showProfileMenu ? 'rotate-180' : ''}`} />
                                 </motion.div>
                             )}
                         </AnimatePresence>
                     </button>
-                    {/* Profile Menu Dropdown ... (unchanged logic for now, just layout context) */}
-                    {/* ... keeping the rest same, just need to make sure I don't break the closure ... */}
+                    {/* Profile Menu Dropdown */}
                     {showProfileMenu && (
                         <div className="absolute bottom-full left-0 right-0 mb-2 mx-1 bg-popover border border-border rounded-lg shadow-lg overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200 z-50">
                             <div className="p-1">
@@ -293,7 +313,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                                 <button
                                     onClick={() => {
                                         setShowProfileMenu(false);
-                                        // Add your logout logic here
+                                        handleLogout();
                                     }}
                                     className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-destructive/10 text-destructive hover:text-destructive transition-colors text-sm"
                                 >
