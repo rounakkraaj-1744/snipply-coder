@@ -13,7 +13,7 @@ export default function SupportPage() {
         },
         {
             question: "Can I export my code?",
-            answer: "Yes! All projects built with Snipply can be exported as a ZIP file or deployed directly to Vercel/Netlify."
+            answer: "Yes! All projects built with atlaso can be exported as a ZIP file or deployed directly to Vercel/Netlify."
         },
         {
             question: "What happens if I run out of credits?",

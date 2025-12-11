@@ -93,7 +93,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                                 <Command className="w-5 h-5" />
                             </div>
                             <span className="text-lg font-bold tracking-tight text-sidebar-foreground truncate whitespace-nowrap">
-                                Snipply
+                                atlaso
                             </span>
                         </motion.div>
                     )}
