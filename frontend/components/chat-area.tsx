@@ -2,6 +2,7 @@
 
 import { Paperclip, Mic, ArrowUp } from "lucide-react";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 export default function ChatArea() {
     const [input, setInput] = useState("");
@@ -44,17 +45,27 @@ export default function ChatArea() {
             <div className="max-w-3xl w-full space-y-8">
 
                 {/* Greeting */}
-                <div className="text-center space-y-2">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="text-center space-y-2"
+                >
                     <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-4xl">
                         <span className="text-primary">{username}</span>, what are we building today???
                     </h1>
                     <p className="text-lg text-muted-foreground">
                         I can help you build web apps, websites, and more.
                     </p>
-                </div>
+                </motion.div>
 
                 {/* Input Area */}
-                <div className="relative group">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    className="relative group"
+                >
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 to-accent/20 rounded-xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
                     <div className="relative flex flex-col bg-card border border-border rounded-xl shadow-lg ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 transition-all">
                         {attachment && (
@@ -87,7 +98,9 @@ export default function ChatArea() {
                                     <Mic className="w-5 h-5" />
                                 </button>
                             </div>
-                            <button
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                                 className={`
                                     p-2 rounded-lg transition-all duration-200
                                     ${input.trim()
@@ -98,23 +111,30 @@ export default function ChatArea() {
                                 disabled={!input.trim()}
                             >
                                 <ArrowUp className="w-5 h-5" />
-                            </button>
+                            </motion.button>
                         </div>
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Suggestions */}
-                <div className="flex justify-center flex-wrap gap-2">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="flex justify-center flex-wrap gap-2"
+                >
                     {suggestions.map((suggestion) => (
-                        <button
+                        <motion.button
                             key={suggestion}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                             onClick={() => setInput(suggestion)}
                             className="px-4 py-2 text-sm bg-card border border-border rounded-full hover:border-primary/50 hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 text-muted-foreground shadow-sm"
                         >
                             {suggestion}
-                        </button>
+                        </motion.button>
                     ))}
-                </div>
+                </motion.div>
             </div>
         </div>
     );

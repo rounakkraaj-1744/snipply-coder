@@ -16,8 +16,10 @@ import {
     HelpCircle,
     Search,
 } from "lucide-react";
+
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface SidebarProps {
     isCollapsed: boolean;
@@ -68,25 +70,34 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
     ];
 
     return (
-        <div
+        <motion.div
+            initial={false}
+            animate={{ width: isCollapsed ? 64 : 256 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className={`
                 h-screen bg-sidebar border-r border-sidebar-border flex flex-col text-sm font-medium
-                transition-all duration-300 ease-in-out
-                ${isCollapsed ? 'w-16' : 'w-64'}
+                overflow-hidden z-20 relative
             `}
         >
             {/* Header */}
             <div className={`p-4 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
-                {!isCollapsed && (
-                    <div className="flex items-center gap-2.5 px-2 overflow-hidden">
-                        <div className="p-1.5 rounded-md bg-primary text-primary-foreground shrink-0">
-                            <Command className="w-5 h-5" />
-                        </div>
-                        <span className="text-lg font-bold tracking-tight text-sidebar-foreground truncate whitespace-nowrap opacity-100 transition-opacity duration-300">
-                            Snipply
-                        </span>
-                    </div>
-                )}
+                <AnimatePresence mode="popLayout">
+                    {!isCollapsed && (
+                        <motion.div
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -10 }}
+                            className="flex items-center gap-2.5 px-2 overflow-hidden"
+                        >
+                            <div className="p-1.5 rounded-md bg-primary text-primary-foreground shrink-0">
+                                <Command className="w-5 h-5" />
+                            </div>
+                            <span className="text-lg font-bold tracking-tight text-sidebar-foreground truncate whitespace-nowrap">
+                                Snipply
+                            </span>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
                 <button
                     onClick={toggleSidebar}
                     className={`
@@ -141,12 +152,8 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                                 key={item.id}
                                 onClick={() => setActiveItem(item.id)}
                                 className={`
-                                    flex items-center w-full rounded-md
-                                    transition-all duration-200 group relative
-                                    ${isActive
-                                        ? 'bg-sidebar-primary/10 text-sidebar-primary'
-                                        : 'text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
-                                    }
+                                    flex items-center w-full rounded-md relative z-10
+                                    transition-colors duration-200 group
                                     ${isCollapsed
                                         ? 'justify-center p-2'
                                         : 'gap-3 px-3 py-2'
@@ -154,16 +161,30 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                                 `}
                                 title={isCollapsed ? item.label : undefined}
                             >
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="activeNav"
+                                        className="absolute inset-0 bg-sidebar-primary/10 rounded-md -z-10"
+                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                    />
+                                )}
                                 <Icon className={`
-                                    shrink-0
+                                    shrink-0 transition-colors duration-200
                                     ${isActive ? 'text-sidebar-primary' : 'text-muted-foreground group-hover:text-sidebar-foreground'}
                                     ${isCollapsed ? 'w-5 h-5' : 'w-4.5 h-4.5'}
                                 `} />
-                                {!isCollapsed && (
-                                    <span className="whitespace-nowrap overflow-hidden transition-all duration-300 opacity-100">
-                                        {item.label}
-                                    </span>
-                                )}
+                                <AnimatePresence mode="popLayout">
+                                    {!isCollapsed && (
+                                        <motion.span
+                                            initial={{ opacity: 0, width: 0 }}
+                                            animate={{ opacity: 1, width: "auto" }}
+                                            exit={{ opacity: 0, width: 0 }}
+                                            className="whitespace-nowrap overflow-hidden"
+                                        >
+                                            {item.label}
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
                             </button>
                         );
                     })}
@@ -171,12 +192,13 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
             </nav>
 
             {/* Bottom Actions */}
+            {/* Bottom Actions */}
             <div className="p-3 mt-auto space-y-1 border-t border-sidebar-border/50">
                 {/* Theme Toggle */}
                 <button
                     onClick={toggleTheme}
                     className={`
-                        flex items-center w-full rounded-md text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors
+                        flex items-center w-full rounded-md text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors group
                         ${isCollapsed ? 'justify-center p-2' : 'gap-3 px-3 py-2'}
                     `}
                     title={isCollapsed ? (isDark ? 'Light Mode' : 'Dark Mode') : undefined}
@@ -186,11 +208,18 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                     ) : (
                         <Moon className={`shrink-0 w-4.5 h-4.5 ${isCollapsed ? 'w-5 h-5' : ''}`} />
                     )}
-                    {!isCollapsed && (
-                        <span className="whitespace-nowrap overflow-hidden transition-all duration-300 opacity-100">
-                            {isDark ? 'Light Mode' : 'Dark Mode'}
-                        </span>
-                    )}
+                    <AnimatePresence mode="popLayout">
+                        {!isCollapsed && (
+                            <motion.span
+                                initial={{ opacity: 0, width: 0 }}
+                                animate={{ opacity: 1, width: "auto" }}
+                                exit={{ opacity: 0, width: 0 }}
+                                className="whitespace-nowrap overflow-hidden"
+                            >
+                                {isDark ? 'Light Mode' : 'Dark Mode'}
+                            </motion.span>
+                        )}
+                    </AnimatePresence>
                 </button>
 
                 {/* Profile Section */}
@@ -206,18 +235,25 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                         <div className="w-8 h-8 rounded-full bg-sidebar-border overflow-hidden ring-1 ring-border flex items-center justify-center shrink-0">
                             <User className="w-4 h-4 text-muted-foreground" />
                         </div>
-                        {!isCollapsed && (
-                            <>
-                                <div className="flex-1 text-left overflow-hidden whitespace-nowrap min-w-0">
-                                    <p className="text-sm font-medium text-sidebar-foreground truncate">John Doe</p>
-                                    <p className="text-xs text-muted-foreground truncate">Pro Plan</p>
-                                </div>
-                                <ChevronUp className={`w-4 h-4 text-muted-foreground transition-transform duration-200 shrink-0 ${showProfileMenu ? 'rotate-180' : ''}`} />
-                            </>
-                        )}
+                        <AnimatePresence mode="popLayout">
+                            {!isCollapsed && (
+                                <motion.div
+                                    initial={{ opacity: 0, width: 0 }}
+                                    animate={{ opacity: 1, width: "auto" }}
+                                    exit={{ opacity: 0, width: 0 }}
+                                    className="flex items-center flex-1 min-w-0 gap-2 overflow-hidden"
+                                >
+                                    <div className="flex-1 text-left overflow-hidden whitespace-nowrap min-w-0">
+                                        <p className="text-sm font-medium text-sidebar-foreground truncate">John Doe</p>
+                                        <p className="text-xs text-muted-foreground truncate">Pro Plan</p>
+                                    </div>
+                                    <ChevronUp className={`w-4 h-4 text-muted-foreground transition-transform duration-200 shrink-0 ${showProfileMenu ? 'rotate-180' : ''}`} />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </button>
-
-                    {/* Profile Menu Dropdown */}
+                    {/* Profile Menu Dropdown ... (unchanged logic for now, just layout context) */}
+                    {/* ... keeping the rest same, just need to make sure I don't break the closure ... */}
                     {showProfileMenu && (
                         <div className="absolute bottom-full left-0 right-0 mb-2 mx-1 bg-popover border border-border rounded-lg shadow-lg overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200 z-50">
                             <div className="p-1">
@@ -269,6 +305,6 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                     )}
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 }

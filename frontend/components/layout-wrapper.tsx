@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Sidebar from "@/components/sidebar";
 import { PanelLeft } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -24,7 +25,9 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     return (
         <div className="flex min-h-screen bg-background font-sans">
             <Sidebar isCollapsed={isCollapsed} toggleSidebar={toggleSidebar} />
-            <main
+            <motion.main
+                layout
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 className={`
                     flex-1 transition-all duration-300 ease-in-out
                     ${isCollapsed ? 'ml-0' : 'ml-0'} 
@@ -40,7 +43,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                 <div className="p-8 w-full max-w-7xl mx-auto">
                     {children}
                 </div>
-            </main>
+            </motion.main>
         </div>
     );
 }
