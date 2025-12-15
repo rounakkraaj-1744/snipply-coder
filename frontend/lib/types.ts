@@ -65,6 +65,16 @@ export interface BillingInfo {
     invoices: Invoice[];
 }
 
+export interface PlanTier {
+    id: string;
+    name: string;
+    price: string;
+    interval: string;
+    description: string;
+    features: string[];
+    recommended?: boolean;
+}
+
 export interface AccessLog {
     id: string;
     event: string;

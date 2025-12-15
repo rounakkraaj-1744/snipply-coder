@@ -92,8 +92,8 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
             animate={{ width: isCollapsed ? 64 : 256 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className={`
-                h-screen bg-sidebar border-r border-sidebar-border flex flex-col text-sm font-medium
-                overflow-hidden z-20 relative
+                h-full bg-sidebar border-r border-sidebar-border flex flex-col text-sm font-medium
+                overflow-hidden z-20 relative flex-shrink-0
             `}
         >
             {/* Header */}

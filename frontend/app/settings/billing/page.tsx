@@ -1,6 +1,6 @@
 'use client';
 
-import { MOCK_BILLING_INFO } from '@/lib/mock-data';
+import { MOCK_BILLING_INFO, AVAILABLE_PLANS as MOCK_PLANS } from '@/lib/mock-data';
 import { Button } from '@/components/ui/button';
 import { CreditCard, Download, CheckCircle2, ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -103,6 +103,60 @@ export default function BillingPage() {
                             Update card <ArrowUpRight className="w-3 h-3 ml-1" />
                         </Button>
                     </div>
+                </div>
+            </section>
+
+            {/* Available Plans */}
+            <section>
+                <div className="mb-6">
+                    <h3 className="text-lg font-medium text-foreground">Available Plans</h3>
+                    <p className="text-sm text-muted-foreground">Choose the plan that fits your needs.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {MOCK_PLANS.map((plan: import('@/lib/types').PlanTier) => (
+                        <div key={plan.id} className={`
+                            relative flex flex-col p-6 rounded-xl border transition-all duration-200
+                            ${plan.recommended
+                                ? 'border-primary/50 ring-1 ring-primary/20 bg-primary/5 shadow-md'
+                                : 'border-border bg-card hover:border-primary/30 hover:shadow-sm'
+                            }
+                        `}>
+                            {plan.recommended && (
+                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider rounded-full shadow-sm">
+                                    Recommended
+                                </div>
+                            )}
+
+                            <div className="mb-4">
+                                <h4 className="text-base font-semibold text-foreground">{plan.name}</h4>
+                                <div className="mt-2 flex items-baseline gap-1">
+                                    <span className="text-2xl font-bold text-foreground">{plan.price}</span>
+                                    <span className="text-sm text-muted-foreground">/{plan.interval}</span>
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-2 min-h-[40px] leading-relaxed">
+                                    {plan.description}
+                                </p>
+                            </div>
+
+                            <ul className="space-y-2 mb-6 flex-1">
+                                {plan.features.map((feature: string, i: number) => (
+                                    <li key={i} className="flex items-center text-xs text-muted-foreground">
+                                        <CheckCircle2 className="w-3 h-3 mr-2 text-primary shrink-0" />
+                                        {feature}
+                                    </li>
+                                ))}
+                            </ul>
+
+                            <Button
+                                variant={plan.recommended ? "default" : "outline"}
+                                className="w-full"
+                                size="sm"
+                            >
+                                {plan.name === 'Monthly' ? 'Current Plan' : 'Upgrade'}
+                            </Button>
+                        </div>
+                    ))}
                 </div>
             </section>
 

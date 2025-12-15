@@ -138,3 +138,47 @@ export const MOCK_PRIVACY_SETTINGS: PrivacySecuritySettings = {
         { id: 'log_3', event: 'Password Changed', ip: '192.168.1.1', location: 'San Francisco, US', date: '2023-09-10 10:00 AM' },
     ],
 };
+
+export const AVAILABLE_PLANS: import('./types').PlanTier[] = [
+    {
+        id: 'daily',
+        name: 'Daily',
+        price: '$5',
+        interval: 'day',
+        description: 'Perfect for short-term projects and quick experiments.',
+        features: ['Unlimited Projects', '1GB Storage', 'Basic Support'],
+    },
+    {
+        id: 'weekly',
+        name: 'Weekly',
+        price: '$25',
+        interval: 'week',
+        description: 'Great for focused sprints and week-long hackathons.',
+        features: ['Unlimited Projects', '5GB Storage', 'Priority Support'],
+    },
+    {
+        id: 'monthly',
+        name: 'Monthly',
+        price: '$80',
+        interval: 'month',
+        description: 'Ideal for ongoing development and small teams.',
+        features: ['Unlimited Projects', '20GB Storage', 'Priority Support', 'Team Access'],
+        recommended: true,
+    },
+    {
+        id: 'semi-annual',
+        name: 'Semi-Annual',
+        price: '$400',
+        interval: '6 months',
+        description: 'Commit to long-term growth with significant savings.',
+        features: ['Unlimited Projects', '50GB Storage', '24/7 Support', 'Team Access', 'Advanced Analytics'],
+    },
+    {
+        id: 'annual',
+        name: 'Annual',
+        price: '$700',
+        interval: 'year',
+        description: 'Maximum value for serious businesses and enterprises.',
+        features: ['Unlimited Projects', 'Unlimited Storage', 'Dedicated Support', 'SSO', 'Audit Logs'],
+    },
+];

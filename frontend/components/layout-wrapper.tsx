@@ -23,16 +23,14 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     };
 
     return (
-        <div className="flex min-h-screen bg-background font-sans">
+        <div className="flex h-screen overflow-hidden bg-background font-sans">
             <Sidebar isCollapsed={isCollapsed} toggleSidebar={toggleSidebar} />
             <motion.main
                 layout
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 className={`
-                    flex-1 transition-all duration-300 ease-in-out
+                    flex-1 overflow-y-auto relative outline-none transition-all duration-300 ease-in-out
                     ${isCollapsed ? 'ml-0' : 'ml-0'} 
-                    /* Since Sidebar is relative and not absolute fixed, we don't need margin left if they are in a flex container. 
-                       The Sidebar width itself will animate. */
                 `}
             >
                 {/* 
@@ -40,7 +38,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                    we could add it here. But typically it's inside the sidebar header.
                    For now, the Sidebar component handles the toggle button.
                 */}
-                <div className="p-8 w-full max-w-7xl mx-auto">
+                <div className="p-8 w-full max-w-7xl mx-auto min-h-full">
                     {children}
                 </div>
             </motion.main>
