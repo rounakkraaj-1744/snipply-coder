@@ -215,7 +215,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                 <button
                     onClick={toggleTheme}
                     className={`
-                        flex items-center w-full rounded-md text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors group
+                        flex items-center w-full rounded-md text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors group cursor-pointer
                         ${isCollapsed ? 'justify-center p-2' : 'gap-3 px-3 py-2'}
                     `}
                     title={isCollapsed ? (isDark ? 'Light Mode' : 'Dark Mode') : undefined}
@@ -244,7 +244,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                     <button
                         onClick={() => setShowProfileMenu(!showProfileMenu)}
                         className={`
-                            flex items-center w-full rounded-md hover:bg-sidebar-accent/50 transition-colors
+                            flex items-center w-full rounded-md hover:bg-sidebar-accent/50 transition-colors cursor-pointer
                             ${showProfileMenu ? 'bg-sidebar-accent/50' : ''}
                             ${isCollapsed ? 'justify-center p-1.5' : 'gap-3 px-3 py-2'}
                         `}
@@ -275,12 +275,20 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                     </button>
                     {/* Profile Menu Dropdown */}
                     {showProfileMenu && (
-                        <div className="absolute bottom-full left-0 right-0 mb-2 mx-1 bg-popover border border-border rounded-lg shadow-lg overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200 z-50">
+                        <div
+                            className={`
+                                absolute bg-popover border border-border rounded-lg shadow-lg overflow-hidden animate-in fade-in duration-200 z-50
+                                ${isCollapsed
+                                    ? 'left-full bottom-0 ml-2 w-48 slide-in-from-left-2'
+                                    : 'bottom-full left-0 right-0 mb-2 slide-in-from-bottom-2'
+                                }
+                            `}
+                        >
                             <div className="p-1">
                                 <Link
                                     href="/settings"
                                     onClick={() => setShowProfileMenu(false)}
-                                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-popover-foreground text-sm"
+                                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-popover-foreground text-sm cursor-pointer"
                                 >
                                     <User className="w-4 h-4" />
                                     <span>Profile</span>
@@ -288,7 +296,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                                 <Link
                                     href="/settings"
                                     onClick={() => setShowProfileMenu(false)}
-                                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-popover-foreground text-sm"
+                                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-popover-foreground text-sm cursor-pointer"
                                 >
                                     <Settings className="w-4 h-4" />
                                     <span>Settings</span>
@@ -296,7 +304,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                                 <Link
                                     href="/settings/billing"
                                     onClick={() => setShowProfileMenu(false)}
-                                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-popover-foreground text-sm"
+                                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-popover-foreground text-sm cursor-pointer"
                                 >
                                     <CreditCard className="w-4 h-4" />
                                     <span>Billing</span>
@@ -305,7 +313,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                                 <Link
                                     href="/support"
                                     onClick={() => setShowProfileMenu(false)}
-                                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-popover-foreground text-sm"
+                                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors text-popover-foreground text-sm cursor-pointer"
                                 >
                                     <HelpCircle className="w-4 h-4" />
                                     <span>Support</span>
@@ -315,7 +323,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                                         setShowProfileMenu(false);
                                         handleLogout();
                                     }}
-                                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-destructive/10 text-destructive hover:text-destructive transition-colors text-sm"
+                                    className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-destructive/10 text-destructive hover:text-destructive transition-colors text-sm cursor-pointer"
                                 >
                                     <LogOut className="w-4 h-4" />
                                     <span>Logout</span>

@@ -1,11 +1,19 @@
 import { betterAuth } from "better-auth";
+import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { MongoClient } from "mongodb";
+
+const client = new MongoClient(
+    process.env.MONGODB_URI || "mongodb://localhost:27017/atlaso"
+);
+const db = client.db();
 
 export const auth = betterAuth({
-    baseURL: process.env.BETTER_AUTH_BASE_URL || "http://localhost:3000",
-    secret: process.env.BETTER_AUTH_SECRET || "supersecretkey",
+    baseURL: process.env.BETTER_AUTH_BASE_URL || "http://localhost:8080",
+    secret: process.env.BETTER_AUTH_SECRET,
     trustedOrigins: [
-        process.env.FRONTEND_URL || "http://localhost:3001"
+        process.env.FRONTEND_URL || "http://localhost:3000"
     ],
+    database: mongodbAdapter(db),
     socialProviders: {
         github: {
             clientId: process.env.GITHUB_CLIENT_ID as string,
@@ -17,3 +25,4 @@ export const auth = betterAuth({
         },
     },
 });
+
