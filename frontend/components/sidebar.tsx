@@ -1,7 +1,7 @@
 'use client';
 
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 import {
     Home,
@@ -36,8 +36,8 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
 
     const [isDark, setIsDark] = useState(false);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
-    const [activeItem, setActiveItem] = useState('home');
     const searchInputRef = useRef<HTMLInputElement>(null);
+    const pathname = usePathname();
 
     const handleLogout = async () => {
         await authClient.signOut({
@@ -80,10 +80,10 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
     };
 
     const navItems = [
-        { id: 'home', label: 'Home', icon: Home },
-        { id: 'projects', label: 'Projects', icon: FolderKanban },
-        { id: 'templates', label: 'Templates', icon: LayoutTemplate },
-        { id: 'history', label: 'History', icon: History },
+        { id: '/dashboard', label: 'Home', icon: Home, path: '/' },
+        { id: '/projects', label: 'Projects', icon: FolderKanban, path: '/projects' },
+        { id: '/templates', label: 'Templates', icon: LayoutTemplate, path: '/templates' },
+        { id: '/history', label: 'History', icon: History, path: '/history' },
     ];
 
     return (
@@ -162,12 +162,12 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                 <div className="space-y-0.5">
                     {navItems.map((item) => {
                         const Icon = item.icon;
-                        const isActive = activeItem === item.id;
+                        const isActive = pathname === item.path || (item.path === '/' && pathname === '/');
 
                         return (
-                            <button
+                            <Link
                                 key={item.id}
-                                onClick={() => setActiveItem(item.id)}
+                                href={item.path}
                                 className={`
                                     flex items-center w-full rounded-md relative z-10
                                     transition-colors duration-200 group
@@ -202,7 +202,7 @@ export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
                                         </motion.span>
                                     )}
                                 </AnimatePresence>
-                            </button>
+                            </Link>
                         );
                     })}
                 </div>

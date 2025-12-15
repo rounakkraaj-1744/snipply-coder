@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { User, CreditCard, Shield } from "lucide-react";
+import { User, CreditCard, Shield, Lock, Bell } from "lucide-react";
 
 export default function SettingsLayout({
     children,
@@ -12,9 +12,10 @@ export default function SettingsLayout({
     const pathname = usePathname();
 
     const navItems = [
-        { href: "/settings", label: "Account", icon: User },
-        { href: "/settings/billing", label: "Billing & Plans", icon: CreditCard },
-        { href: "/settings/security", label: "Privacy & Security", icon: Shield },
+        { name: 'Profile', href: '/settings', icon: User },
+        { name: 'Billing & Plans', href: '/settings/billing', icon: CreditCard },
+        { name: 'Privacy & Security', href: '/settings/security', icon: Lock },
+        { name: 'Notifications', href: '/settings/notifications', icon: Bell },
     ];
 
     return (
@@ -39,7 +40,7 @@ export default function SettingsLayout({
                 `}
                             >
                                 <Icon className="w-4 h-4" />
-                                {item.label}
+                                {item.name}
                             </Link>
                         );
                     })}
