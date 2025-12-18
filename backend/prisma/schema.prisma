@@ -6,3 +6,55 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum ProjectStatus {
+  INACTIVE
+  ACTIVE
+}
+
+enum ProjectDomain {
+  NONE
+  ECOMMERCE
+  MARKETING
+  FINTECH
+  GAMES
+  SAAS
+}
+
+enum ProjectVisibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum DesignVersionState {
+  DRAFT
+  GENERATED
+  EDITED
+  FINAL
+}
+
+// Ownership, Scope, Identity, Lifecycle
+model Project {
+  id              String              @id @default(uuid())
+  ownerUserId     String
+  name            String      
+  description     String
+  status          ProjectStatus       @default(INACTIVE) 
+  domain          ProjectDomain       @default(NONE)
+  visibility      ProjectVisibility   @default(PUBLIC)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+}
+
+model DesignVersion{
+  id              String              @id @default(uuid())
+  projectId       String
+  versionNumber   Int                 @default(1)
+  state           DesignVersionState  @default(DRAFT)
+  requiremnets    Json[]
+  constraints     Json[]
+  hld             Json[]
+  lld             Json[]
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+}
