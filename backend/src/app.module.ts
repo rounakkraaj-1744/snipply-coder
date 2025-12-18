@@ -16,7 +16,7 @@ import { auth } from "./auth/auth";
   imports: [
     // MongoDB connection
     MongooseModule.forRoot(
-      process.env.MONGODB_URI || "mongodb://localhost:27017/atlaso"
+      process.env.MONGODB_URI!
     ),
     // Feature modules
     LlmModule,
@@ -28,9 +28,10 @@ import { auth } from "./auth/auth";
     VectorModule,
     UserModule,
     LocalAuthModule,
-    // Better-auth for OAuth
+    // Better-auth for OAuth (with disableControllers due to Express 5 compatibility issue)
     AuthModule.forRoot({
       auth,
+      disableControllers: true, // Routes are manually mounted in main.ts with /*splat pattern
     }),
   ],
   controllers: [],
