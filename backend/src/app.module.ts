@@ -11,6 +11,7 @@ import { UserModule } from "./user/user.module";
 import { LocalAuthModule } from "./auth/auth.module";
 import { AuthModule } from "@thallesp/nestjs-better-auth";
 import { auth } from "./auth/auth";
+import { PrismaModule } from "./prisma/prisma.module";
 
 @Module({
   imports: [
@@ -18,6 +19,8 @@ import { auth } from "./auth/auth";
     MongooseModule.forRoot(
       process.env.MONGODB_URI!
     ),
+    // PostgreSQL via Prisma
+    PrismaModule,
     // Feature modules
     LlmModule,
     OrchestratorModule,
